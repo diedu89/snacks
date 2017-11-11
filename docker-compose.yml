@@ -1,0 +1,19 @@
+version: "2"
+services:
+  web:
+    build: .
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://applaudo:secretsnacks@postgres/snacks
+  postgres:
+      image: postgres:9.6.2-alpine
+      environment:
+        POSTGRES_USER: applaudo
+        POSTGRES_DB: snacks
+        POSTGRES_PASSWORD: secretsnacks
