@@ -3,8 +3,8 @@ services:
   web:
     build: .
     volumes:
-      - ./app:/app
-      - /app/node_modules
+      - ./app:/home/node/app
+      - /home/node/app/node_modules
     ports:
       - "3000:3000"
     depends_on:
