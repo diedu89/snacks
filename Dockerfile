@@ -1,11 +1,12 @@
 FROM node:9-alpine
 
-RUN mkdir /app
-WORKDIR /app
-COPY app/package.json /app
+RUN mkdir /home/node/app
+WORKDIR /home/node/app
+COPY app/package.json .
 RUN npm install
+COPY app .
 
-COPY app /app
+RUN chown node:node . -R
 
 EXPOSE 3000
 ENV DEBUG=app:*
