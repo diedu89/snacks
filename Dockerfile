@@ -1,4 +1,4 @@
-FROM node:9-alpine
+FROM node:6-alpine
 
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
@@ -10,4 +10,5 @@ RUN chown node:node . -R
 
 EXPOSE 3000
 ENV DEBUG=app:*
+USER node
 CMD ["npm", "start"]

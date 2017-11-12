@@ -6,29 +6,25 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
 
     var administrators = [
-    {
-      ...(fakeUser()),
-      username: 'mario',
-      password: 'realmario'
-    }
+      Object.assign(fakeUser(),{
+        username: 'mario',
+        password: 'realmario'
+      })
     ];
 
     var users = [
-      {
-        ...(fakeUser()),
+      Object.assign(fakeUser(),{
         username: 'luigi',
         password: 'greenmario'
-      },
-      {
-        ...(fakeUser()),
+      }),
+      Object.assign(fakeUser(),{
         username: 'peach',
         password: 'kidnapped'
-      },
-      {
-        ...(fakeUser()),
+      }),
+      Object.assign(fakeUser(),{
         username: 'browser',
         password: 'kidnapper'
-      }
+      })
     ];
 
     return Promise.all([
