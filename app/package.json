@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "test": "rm test.sqlite && NODE_ENV=test node_modules/.bin/mocha"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -22,6 +23,9 @@
     "sqlite3": "^3.1.13"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "nodemon": "^1.12.1",
+    "supertest": "^3.0.0"
   }
 }
