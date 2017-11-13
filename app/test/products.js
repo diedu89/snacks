@@ -79,13 +79,12 @@ describe('Products', function(){
               .delete('/products/' + product.id)
               .set('Accept', 'application/json')
               .set('Authorization', "JWT " + response.body.token )
-              .expect('Content-Type', /json/)
               .expect(204)
               .end((err, response) => {
                 if(err) done(err);
                 
                 Product.count().then((count)=>{            
-                  expect(count).to.equal(initialCount + 1)
+                  expect(count).to.equal(initialCount - 1)
                   done();
                 })
               });
