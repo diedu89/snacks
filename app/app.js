@@ -30,9 +30,11 @@ app.use(passport.initialize());
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var accounts = require('./routes/accounts');
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/', accounts);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -49,7 +51,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  console.log(err);
+  // console.log(err);
   res.json(err);
 });
 
