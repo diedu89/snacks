@@ -13,6 +13,7 @@ router.post('/',
 		}, next)
 });
 
+/*DELETE delete a product*/
 router.delete('/:id', 
 	passport.authenticate('jwt', {session: false, failWithError: true}), 
 	permit("Administrator"), function(req, res, next) {

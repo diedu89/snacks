@@ -24,6 +24,10 @@ describe('Products', function(){
     })
 	});
 
+  beforeEach(function(done) {
+    return Product.destroy({where:{}, truncate:true})
+  });
+
   it("Product succesfully created by admin", function(done){
     accountsFactory.login(admin)
       .end((err, response) => {       
@@ -92,7 +96,6 @@ describe('Products', function(){
       })
   });
 
-
   it("Product not found", function(done){
     accountsFactory.login(admin)
       .end((err, response) => {       
@@ -121,6 +124,35 @@ describe('Products', function(){
       });
   });
 
+  it("List products", function(done){
+    var products = []
+    for (var i = 0; i < 20; i++) products.push(productFactory.create());
+    
+    Product.bulkCreate(products, {}).then(function(result){
+      console.log(result);
+
+      request(app)
+        .get('/products')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, response) =>{
+          if(err) done(err);
+
+          expect(response.body).to.have.all.keys(['count','rows']);
+          expect(response.body.count).to.equal(20);
+          expect(response.body.rows[0]).to.include({
+            name: products[0].name,
+            description: products[0].description,
+            price: products[0].price,
+            stock: products[0].stock
+          })
+        })
+    })
+
+
+
+  });
 
   after(function(done){
     Promise.all([
