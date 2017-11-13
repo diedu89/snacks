@@ -11,9 +11,10 @@ services:
       - postgres
     environment:
       DATABASE_URL: postgres://applaudo:secretsnacks@postgres/snacks
+      JWT_SECRET: somesnacks
   postgres:
-      image: postgres:9.6.2-alpine
-      environment:
-        POSTGRES_USER: applaudo
-        POSTGRES_DB: snacks
-        POSTGRES_PASSWORD: secretsnacks
+    image: postgres:9.6.2-alpine
+    environment:
+      POSTGRES_USER: applaudo
+      POSTGRES_DB: snacks
+      POSTGRES_PASSWORD: secretsnacks

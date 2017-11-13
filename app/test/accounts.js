@@ -46,6 +46,20 @@ describe('Authentication', function(){
       });
   });
 
+  it("Succesfull login", function(done){
+    request(app)
+      .post('/login')
+      .send({username: user.username, password: user.password})
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((err, response) => {       
+        if(err) done(err);
+        expect(response.body).to.have.all.keys(['token']);
+        done();
+      });
+  });
+
   after(function(done){
     Role.destroy({where: { role: "Administrator" } }).then(function(){
       done(null);

@@ -1,16 +1,19 @@
 var express = require('express');
 var router = express.Router();
-var { User } = require('../models');
+var { User, Role } = require('../models');
+var jwt = require('jsonwebtoken');
 
 /* POST authenticate */
 router.post('/login', function(req, res, next) {
-	User.findOne({where: {username: req.body.username}})
+	User.findOne({include: [{model: Role}], where: {username: req.body.username}})
 		.then(function(user){
 			if (!user) {
 				res.status(401).send({message: "Invalid credentials"});
 			}else{
 				if(user.checkPassword(req.body.password)){
-					res.send({message: "nice!"});
+					var payload = {id: user.id, role: user.Role.role};
+			    var token = jwt.sign(payload, process.env.JWT_SECRET);
+			    res.send({token: token});
 				}else{
 					res.status(401).send({message: "Invalid credentials"});
 				}
