@@ -4,6 +4,16 @@ var router = express.Router();
 var { Product, Sequelize } = require('../models');
 var permit = require('../permission');
 
+/* GET products listing. */
+router.get('/',
+	function(req, res, next) {
+	  Product.findAndCountAll({offset: 0, limit: 10})
+	  	.then(function(result){
+	  		res.send(result);
+	  	})
+	}
+);
+
 /* POST create a product */
 router.post('/', 
 	passport.authenticate('jwt', {session: false, failWithError: true}), 

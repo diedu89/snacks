@@ -25,7 +25,7 @@ describe('Products', function(){
 	});
 
   beforeEach(function(done) {
-    return Product.destroy({where:{}, truncate:true})
+    Product.destroy({where:{}, truncate:true}).then(done);
   });
 
   it("Product succesfully created by admin", function(done){
@@ -129,7 +129,7 @@ describe('Products', function(){
     for (var i = 0; i < 20; i++) products.push(productFactory.create());
     
     Product.bulkCreate(products, {}).then(function(result){
-      console.log(result);
+      console.log(result.length);
 
       request(app)
         .get('/products')
@@ -138,20 +138,19 @@ describe('Products', function(){
         .expect(200)
         .end((err, response) =>{
           if(err) done(err);
-
+          
           expect(response.body).to.have.all.keys(['count','rows']);
           expect(response.body.count).to.equal(20);
           expect(response.body.rows[0]).to.include({
             name: products[0].name,
             description: products[0].description,
-            price: products[0].price,
+            price: parseFloat(products[0].price),
             stock: products[0].stock
           })
+
+          done(null);
         })
     })
-
-
-
   });
 
   after(function(done){
