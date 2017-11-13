@@ -25,7 +25,7 @@ describe('Products', function(){
 	});
 
   beforeEach(function(done) {
-    Product.destroy({where:{}, truncate:true}).then(done);
+    Product.destroy({where:{}, truncate:true}).then(() => done());
   });
 
   it("Product succesfully created by admin", function(done){
@@ -96,7 +96,7 @@ describe('Products', function(){
       })
   });
 
-  it("Product not found", function(done){
+  it("Product to delete not found", function(done){
     accountsFactory.login(admin)
       .end((err, response) => {       
         if(err) done(err);
@@ -182,6 +182,92 @@ describe('Products', function(){
           done(null);
         })
     })
+  });
+
+  it("Product succesfully updated by admin", function(done){
+    var product = null;
+    Product.create(productFactory.create())
+      .then(initialProduct => {
+        accountsFactory.login(admin)
+          .end((err, response) => {       
+            if(err) done(err);
+
+            request(app)
+              .patch('/products/' + initialProduct.id)
+              .send({price: 4, stock: 30})
+              .set('Accept', 'application/json')
+              .set('Authorization', "JWT " + response.body.token )
+              .expect(200)
+              .end((err, response) => {
+                if(err) done(err);
+                
+                Product.findOne({where: {id: initialProduct.id}}).then((product)=>{         
+                  expect(product).to.include({
+                    price: 4, stock: 30
+                  })
+                  expect(response.body).to.equal(product);
+                  done();
+                })
+              });
+          });
+      })
+  });
+
+  it("Can edit only price or stock", function(done){
+    var product = null;
+    Product.create(productFactory.create())
+      .then(p => {
+        product = p;
+        return Product.count();
+      })
+      .then(initialCount => {
+        accountsFactory.login(admin)
+          .end((err, response) => {       
+            if(err) done(err);
+
+            request(app)
+              .patch('/products/' + product.id)
+              .send({name: "new name", price: 30})
+              .set('Accept', 'application/json')
+              .set('Authorization', "JWT " + response.body.token )
+              .expect(400)
+              .end((err, response) => {
+                if(err) done(err);
+                
+                expect(response.body.message).to.equal("Only price and stock can be edited")
+                done();
+              });
+          });
+      })
+  });
+
+  it("Product to update not found", function(done){
+    accountsFactory.login(admin)
+      .end((err, response) => {       
+        if(err) done(err);
+
+        request(app)
+          .patch('/products/9999')
+          .set('Accept', 'application/json')
+          .set('Authorization', "JWT " + response.body.token )
+          .expect('Content-Type', /json/)
+          .expect(404, done)
+      });
+  });
+
+  it("User is not allowed to update a product", function(done){
+    accountsFactory.login(user)
+      .end((err, response) => {       
+        if(err) done(err);
+
+        request(app)
+          .patch('/products/1')
+          .send({})
+          .set('Accept', 'application/json')
+          .set('Authorization', "JWT " + response.body.token )
+          .expect('Content-Type', /json/)
+          .expect(403, done)
+      });
   });
 
   var sortProducts = (sortBy, sortOrder) => {
