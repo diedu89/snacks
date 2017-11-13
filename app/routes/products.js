@@ -19,10 +19,19 @@ router.get('/',
 			return next();
 		}
 
-		var page = req.query.page || 0;
+		var page = req.query.page || 1;
 		var perPage = req.query.perPage || 10;
 
-	  Product.findAndCountAll({offset: page * perPage, limit: perPage, order: [[sortBy, sortOrder]]})
+		var options = {
+			offset: (page - 1) * perPage, 
+			limit: perPage, 
+			order: [[sortBy, sortOrder]]
+		}
+
+		if(req.query.search)
+			options.where = { name: {[Sequelize.Op.iLike]: '%' + req.query.search + '%'}}
+
+	  Product.findAndCountAll(options)
 	  	.then(function(result){
 	  		res.send(result);
 	  	})

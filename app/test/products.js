@@ -138,7 +138,7 @@ describe('Products', function(){
         .expect(200)
         .end((err, response) =>{
           if(err) done(err);
-          var paginatedProduct = products[15];
+          var paginatedProduct = products[10];
 
           expect(response.body).to.have.all.keys(['count','rows']);
           expect(response.body.count).to.equal(20);
