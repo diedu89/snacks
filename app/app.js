@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var passport = require("passport");
+var { Sequelize } = require('./models/index');
 
 require('./config/passport')(passport);
 
@@ -53,6 +54,12 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   // console.log(err);
+
+  if(err instanceof Sequelize.ValidationError){
+    err = err.errors.map(e => e.message);
+    res.status(400);
+  }
+
   res.json(err);
 });
 
