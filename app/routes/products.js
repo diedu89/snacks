@@ -19,7 +19,10 @@ router.get('/',
 			return next();
 		}
 
-	  Product.findAndCountAll({offset: 0, limit: 10, order: [[sortBy, sortOrder]]})
+		var page = req.query.page || 0;
+		var perPage = req.query.perPage || 10;
+
+	  Product.findAndCountAll({offset: page * perPage, limit: perPage, order: [[sortBy, sortOrder]]})
 	  	.then(function(result){
 	  		res.send(result);
 	  	})

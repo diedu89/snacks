@@ -124,7 +124,7 @@ describe('Products', function(){
       });
   });
 
-  it("List products", function(done){
+  it("List products with pagination", function(done){
     var products = []
     for (var i = 0; i < 20; i++) products.push(productFactory.create());
     
@@ -132,20 +132,21 @@ describe('Products', function(){
       products = products.sort(sortProducts('name', 1))
 
       request(app)
-        .get('/products')
+        .get('/products?page=3&perPage=5')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, response) =>{
           if(err) done(err);
+          var paginatedProduct = products[15];
 
           expect(response.body).to.have.all.keys(['count','rows']);
           expect(response.body.count).to.equal(20);
           expect(response.body.rows[0]).to.include({
-            name: products[0].name,
-            description: products[0].description,
-            price: parseFloat(products[0].price),
-            stock: products[0].stock
+            name: paginatedProduct.name,
+            description: paginatedProduct.description,
+            price: parseFloat(paginatedProduct.price),
+            stock: paginatedProduct.stock
           })
 
           done(null);
