@@ -7,7 +7,19 @@ var permit = require('../permission');
 /* GET products listing. */
 router.get('/',
 	function(req, res, next) {
-	  Product.findAndCountAll({offset: 0, limit: 10})
+		var sortBy = req.query.sortBy || "name"
+		if(!["name", "likes"].includes(sortBy)){
+			res.status(400).send({messsage: "Products can only be sorted by name or number of likes"});
+			return next();
+		}
+		
+		var sortOrder = (req.query.sortOrder || "asc").toUpperCase();
+		if(!["ASC", "DESC"].includes(sortOrder)){
+			res.status(400).send({messsage: "Products can only be sorted by name or number of likes"});
+			return next();
+		}
+
+	  Product.findAndCountAll({offset: 0, limit: 10, order: [[sortBy, sortOrder]]})
 	  	.then(function(result){
 	  		res.send(result);
 	  	})
