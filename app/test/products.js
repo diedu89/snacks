@@ -63,6 +63,66 @@ describe('Products', function(){
       });
   });
 
+  it("Product succesfully deleted by admin", function(done){
+    var product = null;
+    Product.create(productFactory.create())
+      .then(p => {
+        product = p;
+        return Product.count();
+      })
+      .then(initialCount => {
+        accountsFactory.login(admin)
+          .end((err, response) => {       
+            if(err) done(err);
+
+            request(app)
+              .delete('/products/' + product.id)
+              .set('Accept', 'application/json')
+              .set('Authorization', "JWT " + response.body.token )
+              .expect('Content-Type', /json/)
+              .expect(204)
+              .end((err, response) => {
+                if(err) done(err);
+                
+                Product.count().then((count)=>{            
+                  expect(count).to.equal(initialCount + 1)
+                  done();
+                })
+              });
+          });
+      })
+  });
+
+
+  it("Product not found", function(done){
+    accountsFactory.login(admin)
+      .end((err, response) => {       
+        if(err) done(err);
+
+        request(app)
+          .delete('/products/9999')
+          .set('Accept', 'application/json')
+          .set('Authorization', "JWT " + response.body.token )
+          .expect('Content-Type', /json/)
+          .expect(404, done)
+      });
+  });
+
+  it("User is not allowed to delete a product", function(done){
+    accountsFactory.login(user)
+      .end((err, response) => {       
+        if(err) done(err);
+
+        request(app)
+          .delete('/products/1')
+          .set('Accept', 'application/json')
+          .set('Authorization', "JWT " + response.body.token )
+          .expect('Content-Type', /json/)
+          .expect(403, done)
+      });
+  });
+
+
   after(function(done){
     Promise.all([
       Role.destroy({where: { role: "Administrator" } }),
