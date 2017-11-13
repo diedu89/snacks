@@ -205,7 +205,6 @@ describe('Products', function(){
                   expect(product).to.include({
                     price: 4, stock: 30
                   })
-                  expect(response.body).to.equal(product);
                   done();
                 })
               });
@@ -248,6 +247,7 @@ describe('Products', function(){
 
         request(app)
           .patch('/products/9999')
+          .send({price: 4, stock: 30})
           .set('Accept', 'application/json')
           .set('Authorization', "JWT " + response.body.token )
           .expect('Content-Type', /json/)
