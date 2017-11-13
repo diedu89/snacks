@@ -73,7 +73,10 @@ describe('Users', function(){
   });
 
   after(function(done){
-    Role.destroy({where: { role: "Administrator" } }).then(function(){
+    Promise.all([
+      Role.destroy({where: { role: "Administrator" } }),
+      Role.destroy({where: { role: "User" } })
+    ]).then(function(){
       done(null);
     });
   });
