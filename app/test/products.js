@@ -24,6 +24,10 @@ describe('Products', function(){
     })
 	});
 
+  beforeEach(function(done) {
+    Product.destroy({where:{}, truncate:true}).then(done);
+  });
+
   it("Product succesfully created by admin", function(done){
     accountsFactory.login(admin)
       .end((err, response) => {       
@@ -92,7 +96,6 @@ describe('Products', function(){
       })
   });
 
-
   it("Product not found", function(done){
     accountsFactory.login(admin)
       .end((err, response) => {       
@@ -121,6 +124,78 @@ describe('Products', function(){
       });
   });
 
+  it("List products with pagination", function(done){
+    var products = []
+    for (var i = 0; i < 20; i++) products.push(productFactory.create());
+    
+    Product.bulkCreate(products, {}).then(function(result){
+      products = products.sort(sortProducts('name', 1))
+
+      request(app)
+        .get('/products?page=3&perPage=5')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, response) =>{
+          if(err) done(err);
+          var paginatedProduct = products[10];
+
+          expect(response.body).to.have.all.keys(['count','rows']);
+          expect(response.body.count).to.equal(20);
+          expect(response.body.rows[0]).to.include({
+            name: paginatedProduct.name,
+            description: paginatedProduct.description,
+            price: parseFloat(paginatedProduct.price),
+            stock: paginatedProduct.stock
+          })
+
+          done(null);
+        })
+    })
+  });
+
+  it("Sort by likes in desc order", function(done){
+    var products = []
+    for (var i = 0; i < 20; i++) products.push(productFactory.create());
+    
+    Product.bulkCreate(products, {}).then(function(result){
+      products = products.sort((a,b) => b.likes - a.likes);
+
+      request(app)
+        .get('/products?sortBy=likes&sortOrder=desc')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, response) =>{
+          if(err) done(err);
+
+          expect(response.body).to.have.all.keys(['count','rows']);
+          expect(response.body.count).to.equal(20);
+          expect(response.body.rows[0]).to.include({
+            likes: products[0].likes,
+            name: products[0].name,
+            description: products[0].description,
+            price: parseFloat(products[0].price),
+            stock: products[0].stock
+          })
+
+          done(null);
+        })
+    })
+  });
+
+  var sortProducts = (sortBy, sortOrder) => {
+    return (a,b) => {
+      var nameA = a[sortBy].toUpperCase(); // ignore upper and lowercase
+      var nameB = b[sortBy].toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) 
+        return -1 * sortOrder;
+      if (nameA > nameB)
+        return 1 * sortOrder;
+
+      return 0;
+    }
+  }
 
   after(function(done){
     Promise.all([
