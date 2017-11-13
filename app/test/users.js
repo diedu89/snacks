@@ -14,7 +14,6 @@ describe('Users list', function(){
     username: 'mario',
     password: 'realmario'
   }
-  this.setTimeOut
 	before(function(done){
 		models.sequelize.sync().then(function(){
 			Role.create({role: "Administrator", Users: [user]}, { include: [{model: User}] }).then(function(){
@@ -44,3 +43,12 @@ describe('Users list', function(){
 	})
 })
 
+describe("Safety in users", function(){
+  it("Unanthorize for non registereds user", function(done){
+      request(app)
+        .get('/users')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(401, done);
+  })
+})
