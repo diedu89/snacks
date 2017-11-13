@@ -30,10 +30,12 @@ app.use(passport.initialize());
 var index = require('./routes/index');
 var users = require('./routes/users');
 var accounts = require('./routes/accounts');
+var products = require('./routes/products');
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/', accounts);
+app.use('/products', products);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

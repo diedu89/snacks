@@ -39,9 +39,11 @@ describe('Products', function(){
           .end((err, response) => {
             if(err) done(err);
             
-            expect(response.body).to.have.all.keys(['id', 'name', 'description', 'stock', 'price', 'likes', 'createdAt', 'updatedAt']);
-            expect(Product.count()).to.equal(1)
-            done();
+            Product.count().then((count)=>{            
+              expect(response.body).to.have.all.keys(['id', 'name', 'description', 'stock', 'price', 'likes', 'createdAt', 'updatedAt']);
+              expect(count).to.equal(1)
+              done();
+            })
           });
       });
   });
