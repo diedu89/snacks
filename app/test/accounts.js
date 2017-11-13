@@ -5,6 +5,7 @@ const request = require('supertest')
 const models = require('../models');
 const {User, Role} = models;
 const userFactory = require('./helpers/users');
+const accountsFactory = require('./helpers/accounts');
 
 describe('Authentication', function(){
 	var user = userFactory.create({ username: 'mario', password: 'realmario'});
@@ -19,11 +20,7 @@ describe('Authentication', function(){
 	});
 
   it("Invalid credentials (inexistent user)", function(done){
-    request(app)
-      .post('/login')
-      .send({username: badUser.username, password: badUser.password})
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
+    accountsFactory.login(badUser)
       .expect(401)
       .end((err, response) => {       
         if(err) done(err);
@@ -33,11 +30,7 @@ describe('Authentication', function(){
   });
 
   it("Invalid credentials (wrong password)", function(done){
-    request(app)
-      .post('/login')
-      .send({username: user.username, password: badUser.password})
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
+    accountsFactory.login({username: user.username, password: badUser.password})
       .expect(401)
       .end((err, response) => {       
         if(err) done(err);
@@ -47,11 +40,7 @@ describe('Authentication', function(){
   });
 
   it("Succesfull login", function(done){
-    request(app)
-      .post('/login')
-      .send({username: user.username, password: user.password})
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
+    accountsFactory.login(user)
       .expect(200)
       .end((err, response) => {       
         if(err) done(err);

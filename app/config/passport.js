@@ -10,9 +10,9 @@ module.exports = function(passport){
 	}
 
 	var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
-	  User.findOne({username: jwt_payload.id}).then(function(user){
+	  User.findOne({where: {id: jwt_payload.id}}).then(function(user){
 	    if (user) {
-	      next(null, user);
+	      next(null, jwt_payload);
 	    } else {
 	      next(null, false);
 	    }
