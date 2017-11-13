@@ -8,7 +8,7 @@ const userFactory = require('./helpers/users');
 const accountsFactory = require('./helpers/accounts');
 
 describe('Authentication', function(){
-	var user = userFactory.create({ username: 'mario', password: 'realmario'});
+	var user = userFactory.create();
   var badUser = userFactory.create();
 
 	before(function(done){

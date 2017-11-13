@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var passport = require("passport");
+var { Sequelize } = require('./models/index');
 
 require('./config/passport')(passport);
 
@@ -30,10 +31,12 @@ app.use(passport.initialize());
 var index = require('./routes/index');
 var users = require('./routes/users');
 var accounts = require('./routes/accounts');
+var products = require('./routes/products');
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/', accounts);
+app.use('/products', products);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -51,6 +54,12 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   // console.log(err);
+
+  if(err instanceof Sequelize.ValidationError){
+    err = err.errors.map(e => e.message);
+    res.status(400);
+  }
+
   res.json(err);
 });
 
