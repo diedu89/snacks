@@ -32,12 +32,13 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.associate = function(models) {
-    User.belongsTo(models.Role, {
+    this.belongsTo(models.Role, {
       onDelete: "CASCADE",
       foreignKey: {
         allowNull: false
       }
     });
+    this.belongsToMany(models.Product, {through: "Like"});
   }
 
   User.prototype.checkPassword = function(password) {
