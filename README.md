@@ -13,7 +13,7 @@ $ docker-compose up
 ``` 
 Sequelize will create the corresponding tables to match models and the api will be available at [http://localhost:3000](http://localhost:3000)
 
-#Seed data
+## Seed data
 
 In a second terminal enter app container and run command to seed
 
