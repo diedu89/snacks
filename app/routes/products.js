@@ -1,7 +1,7 @@
 var express = require('express');
 var passport = require("passport");
 var router = express.Router();
-var { Product, Sequelize } = require('../models');
+var { Product, Sequelize, Purchase } = require('../models');
 var permit = require('../permission');
 
 /* GET products listing. */
@@ -138,7 +138,8 @@ router.post('/:id/purchases',
 					return next();
 				}
 
-				product.setBuyers([req.user.id], {through: {quantity: req.body.quantity, currentPrice: product.price}}).then(relation => {
+				Purchase.create({UserId: req.user.id, ProductId: product.id, quantity: req.body.quantity, currentPrice: product.price})
+				.then(relation => {
 					res.status(204).json();
 				})
 			}, next);

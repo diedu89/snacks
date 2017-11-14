@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
           promises.push(purchase.getProduct().then(function(p){ return p.decrement('stock', {by: purchase.quantity}); }));
         }
         return Promise.all(promises);
+      },
+      afterCreate: function(purchase, options){
+        return purchase.getProduct().then(function(p){ 
+          return p.decrement('stock', {by: purchase.quantity}); 
+        })
       }
     }
   });

@@ -24,5 +24,5 @@ $ docker-compose exec postgres sh
 Once inside just use psql
 
 ```bash
-$ psql -U applaudo -d snacks -W
+$ PGPASSWORD=secretsnacks psql -U applaudo -d snacks
 ``` 
