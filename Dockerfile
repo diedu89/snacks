@@ -11,4 +11,5 @@ RUN chown node:node . -R
 EXPOSE 3000
 ENV DEBUG=app:*
 USER node
-CMD ["npm", "start"]
+
+CMD ["npm", "dev"]
