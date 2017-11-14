@@ -22,11 +22,23 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     } 
   }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
+    hooks: {
+      afterUpdate: function(product, options){
+        var oldPrice = product.previous("price");
+        if(oldPrice != product.price){        
+          product.createPriceLog({
+            oldPrice: oldPrice,
+            newPrice: product.price
+          }).then();
+        }
       }
     }
   });
+
+  Product.associate = function(models) {
+    this.hasMany(models.PriceLog, {onDelete: "CASCADE"});
+  };
+
+
   return Product;
 };

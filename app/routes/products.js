@@ -47,7 +47,7 @@ router.post('/',
 		}, next)
 });
 
-/*DELETE delete a product*/
+/* DELETE delete a product */
 router.delete('/:id', 
 	passport.authenticate('jwt', {session: false, failWithError: true}), 
 	permit("Administrator"), function(req, res, next) {
@@ -63,7 +63,32 @@ router.delete('/:id',
 			.then(deletedProduct => {
 				res.status(204).send();
 			}, next)
-
 });
 
+/* PATCH update price or stock */
+router.patch('/:id', 
+	passport.authenticate('jwt', {session: false, failWithError: true}), 
+	permit("Administrator"), function(req, res, next) {
+		var permited = ["price", "stock", "price,stock"];
+		if(!permited.includes(Object.keys(req.body).sort().join(","))){
+			res.status(400).send({message: "Only price and stock can be edited"});
+			return next();
+		}
+		var product = null;
+		Product.findOne({where: {id: req.params.id}})
+			.then(p => {
+				product = p;
+				if(!product){
+					res.status(404).json();
+					return Promise.reject();
+				}
+
+				return product.update(req.body);
+			}, next)
+			.then(rows => {
+				if(rows > 0) return Product.findOne({where: {id: req.params.id}}).then(p => res.send(p));
+
+				res.send(product);
+			}, next)
+});
 module.exports = router;
