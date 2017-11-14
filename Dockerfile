@@ -12,4 +12,4 @@ EXPOSE 3000
 ENV DEBUG=app:*
 USER node
 
-CMD ["npm", "dev"]
+CMD ["npm", "run", "dev"]
