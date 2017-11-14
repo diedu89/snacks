@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "cd app && npm install",
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "test": "rm -f test.sqlite && NODE_ENV=test node_modules/.bin/mocha -t 8000"
