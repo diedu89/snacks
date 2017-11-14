@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Product.associate = function(models) {
     this.hasMany(models.PriceLog, {onDelete: "CASCADE"});
+    this.belongsToMany(models.User, {through: "Like"})
   };
 
 
