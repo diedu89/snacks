@@ -117,4 +117,32 @@ router.post('/:id/likes',
 	}
 );
 
+/* POST buy a product */
+router.post('/:id/purchases', 
+	passport.authenticate('jwt', {session: false, failWithError: true}), 
+	function(req, res, next) {
+		Product.findById(req.params.id)
+			.then(product => {
+				if(!product){
+					res.status(404).json();
+					return Promise.reject();
+				} 
+
+				if(!req.body.quantity){
+					res.status(400).send({message: "Must define a quantity to buy"});
+					return next();
+				}
+
+				if(req.body.quantity > product.stock){
+					res.status(409).send({message: "There is not enough product in stock, try purchasing less"});
+					return next();
+				}
+
+				product.setBuyers([req.user.id], {through: {quantity: req.body.quantity, currentPrice: product.price}}).then(relation => {
+					res.status(204).json();
+				})
+			}, next);
+	}
+);
+
 module.exports = router;

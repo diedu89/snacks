@@ -39,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
     this.belongsToMany(models.Product, {through: "Like"});
+    this.belongsToMany(models.Product, {through: "Purchase", as: "Purchases"});
   }
 
   User.prototype.checkPassword = function(password) {
