@@ -3,19 +3,21 @@ module.exports = (sequelize, DataTypes) => {
   var Purchase = sequelize.define('Purchase', {
     quantity: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     currentPrice: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     }
   }, {
     hooks: {
-      beforeCreate: function(user, options){
-        console.log("--------------- hook before create --------");
-      },
       afterBulkCreate: function(purchases, options){
-        console.log("-------------- hook after create ----------");
+        var promises = [];
+        for (var i = 0; i < purchases.length; i++) {
+          var purchase = purchases[i];
+          promises.push(purchase.getProduct().then(function(p){ return p.decrement('stock', {by: purchase.quantity}); }));
+        }
+        return Promise.all(promises);
       }
     }
   });

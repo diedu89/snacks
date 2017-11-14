@@ -100,7 +100,7 @@ describe('Purchases', function(){
         if(err) done(err);
 
         request(app)
-          .post('/products/9999/likes')
+          .post('/products/9999/purchases')
           .set('Accept', 'application/json')
           .set('Authorization', "JWT " + response.body.token )
           .expect('Content-Type', /json/)
