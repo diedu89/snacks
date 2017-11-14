@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
+      beforeCreate: function(user, options){
+        console.log("--------------- hook before create --------");
+      },
       afterBulkCreate: function(purchases, options){
         console.log("-------------- hook after create ----------");
       }
