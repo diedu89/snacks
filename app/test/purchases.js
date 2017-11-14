@@ -52,7 +52,7 @@ describe('Purchases', function(){
                 var updatedProduct;
                 Product.findById(product.id).then(p => { 
                   updatedProduct = p; 
-                  return p.countBuyers();
+                  return p.countPurchases();
                 }).then( count => {
                   expect(updatedProduct.stock).to.equal(product.stock - 1);
                   expect(count).to.equal(1);
@@ -82,7 +82,7 @@ describe('Purchases', function(){
                 var updatedProduct;
                 Product.findById(product.id).then(p => { 
                   updatedProduct = p; 
-                  return p.countBuyers();
+                  return p.countPurchases();
                 }).then( count => {
                   expect(updatedProduct.stock).to.equal(product.stock);
                   expect(count).to.equal(0);

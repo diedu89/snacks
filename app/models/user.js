@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
     this.belongsToMany(models.Product, {through: "Like"});
-    this.belongsToMany(models.Product, {through: "Purchase", as: "Purchases", unique: false});
+    //this.belongsToMany(models.Product, {through: "Purchase", as: "Purchases", unique: false});
     this.hasMany(models.Purchase);
   }
 
