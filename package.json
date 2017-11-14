@@ -1,0 +1,24 @@
+{
+  "name": "snack_store",
+  "version": "1.0.0",
+  "description": "A snacks store",
+  "main": "index.js",
+  "scripts": {
+    "start": "(cd app && npm start)",
+    "postinstall": "cd app && npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "6.11.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diedu89/snacks.git"
+  },
+  "author": "Diego Meléndez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diedu89/snacks/issues"
+  },
+  "homepage": "https://github.com/diedu89/snacks#readme"
+}
