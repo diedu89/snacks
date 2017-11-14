@@ -1,5 +1,6 @@
 {
   "development": {
+    "dialect": "postgres",
     "use_env_variable": "DATABASE_URL"
   },
   "test": {
@@ -8,6 +9,7 @@
     "logging": false
   },
   "production": {
+    "dialect": "postgres",
     "use_env_variable": "DATABASE_URL"
   }
 }
