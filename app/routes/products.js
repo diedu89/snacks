@@ -83,7 +83,7 @@ router.patch('/:id',
 					return Promise.reject();
 				}
 
-				return Product.update(req.body ,{where: {id: product.id}});
+				return product.update(req.body);
 			}, next)
 			.then(rows => {
 				if(rows > 0) return Product.findOne({where: {id: req.params.id}}).then(p => res.send(p));

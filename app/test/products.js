@@ -3,7 +3,7 @@ const request = require('supertest')
 			, { expect } = require('chai');
 
 const models = require('../models');
-const { User, Role, Product } = models;
+const { User, Role, Product, PriceLog } = models;
 const userFactory = require('./helpers/users');
 const accountsFactory = require('./helpers/accounts');
 const productFactory = require('./helpers/products');
@@ -201,10 +201,44 @@ describe('Products', function(){
               .end((err, response) => {
                 if(err) done(err);
                 
-                Product.findOne({where: {id: initialProduct.id}}).then((product)=>{         
+                Product.findOne({where: {id: initialProduct.id}, include:[{model: PriceLog}]}).then((product)=>{         
                   expect(product).to.include({
                     price: 4, stock: 30
                   })
+                  expect(product.PriceLogs.length).to.equal(1);
+                  expect(product.PriceLogs[0]).to.include({
+                    oldPrice: parseFloat(initialProduct.price),
+                    newPrice: 4.00
+                  })
+                  done();
+                })
+              });
+          });
+      })
+  });
+
+  it("No change on product price does not create log", function(done){
+    var product = null;
+    Product.create(productFactory.create())
+      .then(initialProduct => {
+        accountsFactory.login(admin)
+          .end((err, response) => {       
+            if(err) done(err);
+
+            request(app)
+              .patch('/products/' + initialProduct.id)
+              .send({price: initialProduct.price, stock: initialProduct.stock + 3})
+              .set('Accept', 'application/json')
+              .set('Authorization', "JWT " + response.body.token )
+              .expect(200)
+              .end((err, response) => {
+                if(err) done(err);
+                
+                Product.findOne({where: {id: initialProduct.id}, include:[{model: PriceLog}]}).then((product)=>{         
+                  expect(product).to.include({
+                    price: parseFloat(initialProduct.price), stock: initialProduct.stock + 3
+                  })
+                  expect(product.PriceLogs.length).to.equal(0);
                   done();
                 })
               });

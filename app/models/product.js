@@ -21,6 +21,18 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0
     } 
+  }, {
+    hooks: {
+      afterUpdate: function(product, options){
+        var oldPrice = product.previous("price");
+        if(oldPrice != product.price){        
+          product.createPriceLog({
+            oldPrice: oldPrice,
+            newPrice: product.price
+          }).then();
+        }
+      }
+    }
   });
 
   Product.associate = function(models) {
