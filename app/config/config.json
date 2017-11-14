@@ -4,7 +4,8 @@
   },
   "test": {
     "dialect": "sqlite",
-    "storage": "./test.sqlite"
+    "storage": "./test.sqlite",
+    "logging": false
   },
   "production": {
     "use_env_variable": "DATABASE_URL"

@@ -61,16 +61,17 @@ describe('Likes', function(){
 
   it("Like twice must not increment neither create relation", function(done){
     var product = null;
+    var createdUser=null;
     User.findOne({where:{username: user.username}})
       .then(u => {
-        user = u;
+        createdUser = u;
         return Product.create(productFactory.create());
       })
       .then(p => {
         product = p;
-        return product.setUsers([user]);
+        return product.setUsers([createdUser]).then(() => product.reload());
       })
-      .then(result => {
+      .then(product => {
         accountsFactory.login(user)
           .end((err, response) => {       
             if(err) return done(err);

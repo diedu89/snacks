@@ -91,4 +91,30 @@ router.patch('/:id',
 				res.send(product);
 			}, next)
 });
+
+/* POST like a product */
+router.post('/:id/likes', 
+	passport.authenticate('jwt', {session: false, failWithError: true}), 
+	function(req, res, next) {
+		Product.findById(req.params.id)
+			.then(product => {
+				if(!product){
+					res.status(404).json();
+					return Promise.reject();
+				} 
+
+				product.countUsers({where: {id: req.user.id}})
+					.then(count =>{
+						if(count == 0){
+							product.setUsers([req.user.id]).then(relation => {
+								res.status(204).json();
+							})
+						}else{
+							res.status(204).json();
+						}
+					})
+			}, next);
+	}
+);
+
 module.exports = router;
