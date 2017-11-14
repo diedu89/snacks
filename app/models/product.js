@@ -21,12 +21,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0
     } 
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
   });
+
+  Product.associate = function(models) {
+    this.hasMany(models.PriceLog, {onDelete: "CASCADE"});
+  };
+
+
   return Product;
 };
