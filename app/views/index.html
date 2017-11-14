@@ -1,0 +1,55 @@
+<!doctype html>
+<html ng-app="snacksApp">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+		<script src="javascripts/paging.min.js"></script>
+		<script src="javascripts/app.js"></script>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="stylesheets/style.css">
+	</head>
+	<body style="background: #FAFAFA">
+		<h1 style="text-align: center;">Snacks</h1>
+		<div ng-controller="AppController as ctrl">
+		<form ng-submit="ctrl.searchSnack(name)">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-6 col-sm-offset-3">
+							<div id="imaginary_container"> 
+								<div class="input-group stylish-input-group">
+									<input type="text" class="form-control" ng-model="name" placeholder="Search" >
+									<span class="input-group-addon">
+										<button type="submit">
+											<span class="glyphicon glyphicon-search"></span>
+										</button>  
+									</span>
+								</div>
+							</div>
+							
+							<br>
+							<div ng-show="ctrl.loading"> Loading... </div>
+							<div ng-hide="ctrl.loading" class="row">
+								<div ng-show="ctrl.data.count == 0">
+									Products with name "{{name}}" not found
+								</div>
+								<div class="panel" style="padding: 15px" ng-repeat="snack in ctrl.data.rows track by $id(snack)">
+									<h4>{{snack.name}}</h4>
+									<h6>{{snack.description}}</h6>
+									<br>
+									<div class="row">
+										<div class="col-sm-6">{{snack.likes}} people like this product </div>
+										<div class="col-sm-6">{{snack.price | currency }} </div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div paging page="ctrl.page" page-size="5" total="ctrl.data.count" paging-action="ctrl.changePage(page)">
+								</div> 
+							</div>
+						</div>
+					</div>
+				</div>
+		</form>
+		</div>
+	</body>
+</html>
